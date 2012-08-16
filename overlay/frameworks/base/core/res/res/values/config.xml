@@ -252,4 +252,7 @@
         <item>10</item>
     </integer-array>
 
+    <!-- If true, adds support for no delay A2DP in Samsung devices -->
+    <bool name="config_noDelayInATwoDP">true</bool>
+
 </resources>
