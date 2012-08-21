@@ -28,6 +28,9 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
 # Inherit from tuna device
 $(call inherit-product, device/samsung/tuna/device.mk)
 
+PRODUCT_PACKAGES += \
+    GNexusParts
+
 # Set those variables here to overwrite the inherited values.
 PRODUCT_NAME := full_tuna
 PRODUCT_DEVICE := tuna
