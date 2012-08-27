@@ -34,6 +34,9 @@ struct tuna_power_module {
     int boostpulse_warned;
 };
 
+/* Stored values, so we don't overwrite them when switching the screen on and off */
+static char max_freq_on[20];
+
 static void sysfs_write(char *path, char *s)
 {
     char buf[80];
@@ -53,6 +56,20 @@ static void sysfs_write(char *path, char *s)
     }
 
     close(fd);
+}
+
+static int sysfs_read(char *path, char *s, int len)
+{
+    char buf[80];
+    int fd = open(path, O_RDONLY);
+
+    if (fd < 0) {
+        strerror_r(errno, buf, sizeof(buf));
+        ALOGE("Error opening %s: %s\n", path, buf);
+        return -1;
+    }
+
+    return read(fd, s, len);
 }
 
 static void tuna_power_init(struct power_module *module)
@@ -98,13 +115,18 @@ static int boostpulse_open(struct tuna_power_module *tuna)
 
 static void tuna_power_set_interactive(struct power_module *module, int on)
 {
+    if (!on) {
+        sysfs_read("/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq",
+                max_freq_on, sizeof(max_freq_on));
+    }
+
     /*
      * Lower maximum frequency when screen is off.  CPU 0 and 1 share a
      * cpufreq policy.
      */
 
     sysfs_write("/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq",
-                on ? "1200000" : "700000");
+                on ? max_freq_on : "700000");
 }
 
 static void tuna_power_hint(struct power_module *module, power_hint_t hint,
