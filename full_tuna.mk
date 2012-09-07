@@ -29,7 +29,6 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
 $(call inherit-product, device/samsung/tuna/device.mk)
 
 PRODUCT_PACKAGES += \
-    CNAWallpapers \
     GNexusParts
 
 # Set those variables here to overwrite the inherited values.
